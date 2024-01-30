@@ -1,1 +1,3 @@
-some interesting notes
+. . . 
+. . .
+. X .
