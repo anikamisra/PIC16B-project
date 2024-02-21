@@ -1,6 +1,6 @@
 #necssary packages: 
-from midiutil import MIDIFile
-from mingus.core import chords
+from midiutil import MIDIFile #this package enables us to create an audo file
+from mingus.core import chords #this package uses music principles to define certain elements of our code (including what different chord or note names represent)
 
 chord_progression = ["Cmaj7", "Cmaj7", "Fmaj7", "Gdom7"]
 
