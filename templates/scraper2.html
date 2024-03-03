@@ -7,10 +7,10 @@
 </head>
 <body>
     <h1>Scraper 2</h1>
-    <form action="/scraper2" method="post">
-        <label for="artistname">Artist Name:</label><br>
-        <input type="text" id="artistname" name="artistname"><br><br>
-        <input type="submit" value="Submit">
+    <form action="{{ url_for('scraper2') }}" method="post">
+        <label for="artist">Enter Artist Name:</label>
+        <input type="text" id="artist" name="artist" required>
+        <button type="submit">Run Scraper</button>
     </form>
 </body>
 </html>

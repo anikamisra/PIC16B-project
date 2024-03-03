@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrapy Frontend</title>
+    <title>Scrapers</title>
 </head>
 <body>
-    <h1>Welcome to Scrapy Frontend</h1>
+    <h1>Welcome to Scrapers!</h1>
     <ul>
-        <li><a href="/scraper1">Scraper 1</a></li>
-        <li><a href="/scraper2">Scraper 2</a></li>
+        <li><a href="{{ url_for('scraper1') }}">Scraper 1</a></li>
+        <li><a href="{{ url_for('scraper2') }}">Scraper 2</a></li>
     </ul>
 </body>
 </html>
