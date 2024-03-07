@@ -7,17 +7,21 @@
 </head>
 <body>
     <h1>Search With Artist</h1>
+    <ul>
+        <li><a href="{{ url_for('scraper1') }}">Click here once you have noted down the index of artist's song</a></li>
+    </ul>
     <form action="{{ url_for('SearchWithArtist') }}" method="post">
         <label for="artist">Enter Artist Name:</label>
         <input type="text" id="artist" name="artist" required>
         <button type="submit">Search</button>
     </form>
-
     <h2>Search Results</h2>
-    <ul>
+    <ol type="1">
         {% for line in result_data %}
         <li>{{ line }}</li>
         {% endfor %}
-    </ul>
+    </ol>
 </body>
 </html>
+
+

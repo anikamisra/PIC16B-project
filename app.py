@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask import jsonify
 import subprocess
+import os
 
 app = Flask(__name__)
 
@@ -15,9 +17,7 @@ def scraper1():
         return redirect(url_for('scraper1_result'))
     return render_template('scraper1.html')
 
-
-import os
-
+selected_line = ""
 
 @app.route('/SearchWithArtist', methods=['GET', 'POST'])
 def SearchWithArtist():
@@ -25,10 +25,13 @@ def SearchWithArtist():
         # Modify the user input for scraper command
         artist = request.form['artist'].lower().replace(' ', '')
         # Run scraper 2
-        subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'scraper2_output.csv', '-a', 'artistname=' + artist])
-        # Read the contents of the result.csv file
+        subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'results.csv', '-a', 'artistname=' + artist])
+        # Read the contents of the result.csv file, skipping the first line
         result_file_path = os.path.join(os.getcwd(), 'chord_scraper', 'chord_scraper', 'results.csv')
         with open(result_file_path, 'r') as file:
+            # Skip the first line
+            next(file)
+            # Read the rest of the lines
             result_data = file.readlines()
         return render_template('SearchWithArtist.html', result_data=result_data)
     return render_template('SearchWithArtist.html')
