@@ -18,8 +18,10 @@ def scraper1():
 @app.route('/scraper2', methods=['GET', 'POST'])
 def scraper2():
     if request.method == 'POST':
+        # Modify the user input for scraper command
+        artist = request.form['artist'].lower().replace(' ', '')
         # Run scraper 2
-        subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'scraper2_output.csv', '-a', 'artistname=' + request.form['artist']])
+        subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'scraper2_output.csv', '-a', 'artistname=' + artist])
         return redirect(url_for('scraper2_result'))
     return render_template('scraper2.html')
 
