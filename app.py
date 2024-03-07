@@ -15,15 +15,24 @@ def scraper1():
         return redirect(url_for('scraper1_result'))
     return render_template('scraper1.html')
 
-@app.route('/scraper2', methods=['GET', 'POST'])
-def scraper2():
+
+import os
+
+
+@app.route('/SearchWithArtist', methods=['GET', 'POST'])
+def SearchWithArtist():
     if request.method == 'POST':
         # Modify the user input for scraper command
         artist = request.form['artist'].lower().replace(' ', '')
         # Run scraper 2
         subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'scraper2_output.csv', '-a', 'artistname=' + artist])
-        return redirect(url_for('scraper2_result'))
-    return render_template('scraper2.html')
+        # Read the contents of the result.csv file
+        result_file_path = os.path.join(os.getcwd(), 'chord_scraper', 'chord_scraper', 'results.csv')
+        with open(result_file_path, 'r') as file:
+            result_data = file.readlines()
+        return render_template('SearchWithArtist.html', result_data=result_data)
+    return render_template('SearchWithArtist.html')
+
 
 @app.route('/scraper1/result')
 def scraper1_result():

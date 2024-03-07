@@ -6,11 +6,18 @@
     <title>Scraper 2</title>
 </head>
 <body>
-    <h1>Scraper 2</h1>
-    <form action="{{ url_for('scraper2') }}" method="post">
+    <h1>Search With Artist</h1>
+    <form action="{{ url_for('SearchWithArtist') }}" method="post">
         <label for="artist">Enter Artist Name:</label>
         <input type="text" id="artist" name="artist" required>
-        <button type="submit">Run Scraper</button>
+        <button type="submit">Search</button>
     </form>
+
+    <h2>Search Results</h2>
+    <ul>
+        {% for line in result_data %}
+        <li>{{ line }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
