@@ -11,7 +11,7 @@ class Database:
     def __init__(self, db_pswd):
         uri = f"mongodb+srv://athenamo:{db_pswd}@cluster0.pirmgae.mongodb.net/"
         self.client = MongoClient(uri, server_api=ServerApi('1'))
-        self.db = self.client['chordy']
+        self.db = self.client['cluster0']
         try:
             self.client.admin.command('ping')
             print("Pinged your deployment. You successfully connected to MongoDB!")
@@ -20,15 +20,15 @@ class Database:
             print(e)
 
     def add_user(self, user: User):
-        if self.db.find_one({"username": user.username}) is not None:
+        if self.db.users.find_one({"username": user.username}) is not None:
             return False
         else:
-            self.db.insert_one(vars(user))
+            self.db.users.insert_one(vars(user))
             return True
 
     def verify_user(self, username, password):
-        user_data = self.db.find_one({"username": username})
-        if user_data:
-            if user_data["password"] == password:
+        user = self.db.users.find_one({"username": username})
+        if user:
+            if user["password"] == password:
                 return True
         return False

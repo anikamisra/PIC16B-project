@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask import jsonify
+from flask_cors import CORS
 import subprocess
 import os
 from dotenv import load_dotenv
-from db import Database, User
+from .db import Database, User
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+CORS(app, supports_credentials=True)
 load_dotenv(".env")
 database = Database(os.getenv("DB_PSWD"))
 
