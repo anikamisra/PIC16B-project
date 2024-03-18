@@ -27,7 +27,8 @@ def SearchWithArtist():
         # Run scraper 2
         subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'results.csv', '-a', 'artistname=' + artist])
         # Read the contents of the result.csv file, skipping the first line
-        result_file_path = os.path.join(os.getcwd(), 'chord_scraper', 'chord_scraper', 'results.csv')
+        #result_file_path = os.path.join(os.getcwd(), 'chord_scraper', 'chord_scraper', 'results.csv')
+        result_file_path = '/PIC16B-project/chord_scraper/chord_scraper/results.csv'
         with open(result_file_path, 'r') as file:
             # Skip the first line
             next(file)
