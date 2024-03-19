@@ -1,4 +1,5 @@
-.DS_Store
+/.DS_Store
 geckodriver.log
 __pycache__/
 .env
+16bProject/ChordsScraper/.DS_Store
