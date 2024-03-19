@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scraper 2</title>
+    <style>
+        .error-message {
+            color: blue;
+        }
+    </style>
 </head>
 <body>
     <h1>Search With Artist</h1>
@@ -15,13 +20,15 @@
         <input type="text" id="artist" name="artist" required>
         <button type="submit">Search</button>
     </form>
-    <h2>Search Results</h2>
-    <ol type="1">
-        {% for line in result_data %}
-        <li>{{ line }}</li>
-        {% endfor %}
-    </ol>
+    {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+    {% else %}
+        <h2>Search Results</h2>
+        <ol type="1">
+            {% for line in result_data %}
+                <li>{{ line }}</li>
+            {% endfor %}
+        </ol>
+    {% endif %}
 </body>
 </html>
-
-

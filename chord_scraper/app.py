@@ -3,6 +3,7 @@ from flask import jsonify
 from flask_cors import CORS
 import subprocess
 import os
+import difflib
 from dotenv import load_dotenv
 from .db import Database, User
 
@@ -62,18 +63,25 @@ selected_line = ""
 @app.route('/SearchWithArtist', methods=['GET', 'POST'])
 def SearchWithArtist():
     if request.method == 'POST':
-        # Modify the user input for scraper command
+        # Get the artist name from the form and format it properly
         artist = request.form['artist'].lower().replace(' ', '')
-        # Run scraper 2
-        subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'results.csv', '-a', 'artistname=' + artist])
-        # Read the contents of the result.csv file, skipping the first line
-        #result_file_path = os.path.join(os.getcwd(), 'chord_scraper', 'chord_scraper', 'results.csv')
-        result_file_path = './chord_scraper/results.csv'
-        with open(result_file_path, 'r') as file:
-            # Skip the first line
-            next(file)
-            # Read the rest of the lines
-            result_data = file.readlines()
+        # Search for the CSV file with the matching artist name
+        csv_file_path = os.path.join(os.getcwd(), 'chord_scraper', artist + '.csv')
+        if os.path.exists(csv_file_path):
+            # If the CSV file exists, read its contents
+            with open(csv_file_path, 'r') as file:
+                result_data = file.readlines()
+        else:
+            # Find the first artist whose name starts with the same character as the input artist's name
+            all_csv_files = [f[:-4] for f in os.listdir(os.path.join(os.getcwd(), 'chord_scraper')) if
+                             f.endswith('.csv')]
+            similar_artist = next((a for a in all_csv_files if a.startswith(artist[0])), None)
+            if similar_artist:
+                suggestion = similar_artist
+                error_message = f"Couldn't find the artist in top 10. Did you mean {suggestion}?"
+            else:
+                error_message = "Couldn't find the artist in top 10. No similar artist found."
+            return render_template('SearchWithArtist.html', error_message=error_message)
         return render_template('SearchWithArtist.html', result_data=result_data)
     return render_template('SearchWithArtist.html')
 
