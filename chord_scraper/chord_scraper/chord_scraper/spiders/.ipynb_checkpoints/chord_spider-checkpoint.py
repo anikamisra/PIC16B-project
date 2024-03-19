@@ -1,6 +1,7 @@
 import scrapy 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from scrapy.selector import Selector
 from scrapy.http import Request
 import time 
@@ -12,6 +13,8 @@ import time
 
 # if you are using the second scraper: 
 # scrapy crawl chord_scraper -o results.csv -a artistname=dua-lipa
+# scrapy crawl chord_scraper -o taylorswift.csv -a artistname=taylor-swift
+
 """
 class chord_scraper(scrapy.Spider): 
     name = 'chord_scraper'
@@ -52,6 +55,7 @@ class chord_scraper(scrapy.Spider):
 
 # this code parses the artist page and returns the list of songs for a given artist. 
 
+
 class chord_scraper(scrapy.Spider): 
     name = 'chord_scraper'
     
@@ -65,9 +69,16 @@ class chord_scraper(scrapy.Spider):
         # need to add an error catcher for if this artist page doesn't exist 
         self.start_urls = [artist_page_url]
         
-        options = Options()
-        options.headless = True
-        self.driver = webdriver.Firefox(options=options)
+        #options = Options()
+        #options.headless = True
+        #firefox_profile = webdriver.FirefoxProfile()
+        #firefox_profile.set_preference("browser.privatebrowsing.autostart", True)
+        #self.driver = webdriver.Firefox(options=options)
+        options = ChromeOptions()
+        options.add_argument("--incognito")
+        options.add_argument("--headless")
+
+        self.driver = webdriver.Chrome(options=options)
     def parse(self, response):
         
         self.driver.get(response.url) 
@@ -80,20 +91,47 @@ class chord_scraper(scrapy.Spider):
         for link in sel.css('div.s1qyqb8i.g1aau9lx a::attr(href)'):
         # get the url
             song_url = link.get()
+            base_url = "https://chordify.net" + song_url
 
         # get the associated song title
-            #song_title_parts = link.xpath('./following-sibling::div[1]/span/text()').getall()
-            #song_title = ''.join(song_title_parts)
-            start = song_url.rfind("/")
-            end = len(song_url) - 7 
-            song_title = song_url[start+1:end]
-            song_title = (song_title.replace('-', ' ')).title()
-
-        # yield the result as a dictionary
-            yield {
-                'song_name': song_title,
-                'song_url': song_url,
-            }
+            
+            #start = song_url.rfind("/")
+            #end = len(song_url) - 7 
+            #song_title = song_url[start+1:end]
+            #song_title = (song_title.replace('-', ' ')).title()
+            yield scrapy.Request(url = base_url, callback = self.parse_song_url)
+    def parse_song_url(self, response): 
+        self.driver.get(response.url)
+        time.sleep(5)
+        html = self.driver.page_source
+        sel = Selector(text=html)
         
-    def closed(self, reason): 
+        song_url = response.url
+        start = song_url.rfind("/")
+        end = len(song_url) - 7 
+        song_title = song_url[start+1:end]
+        song_title = (song_title.replace('-', ' ')).title()
+
+        # Now you can use sel just like the response, how we did with scrapy 
+        div = sel.css('div.s4xyh0t > div.chords')
+        barlength = div.css('::attr(class)').re_first('barlength-(\d+)')
+        tags_with_i_value = div.css('[data-i]')
+        table = [{'i-value': tag.css('::attr(data-i)').get(), 'data-handle': tag.css('::attr(data-handle)').get(), 'barlength': barlength} for tag in tags_with_i_value]
+        dict_of_chords = dict()
+        for row in table: 
+            i_value = row['i-value']
+            chord = row['data-handle']
+            barlength = row['barlength']
+            # make a dictionary that contains bar number in key and chord and bar length (tuple) in value. 
+            dict_of_chords[i_value] = (chord, barlength) 
+        # yield the result as a dictionary
+        yield {
+            'song_name': song_title,
+            'song_url': song_url,
+            'song_chords': dict_of_chords
+            }
+
+    def closed(self, reason):
         self.driver.quit()
+        
+
