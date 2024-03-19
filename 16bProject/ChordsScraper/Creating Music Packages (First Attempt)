@@ -1,10 +1,9 @@
 #necssary packages: 
 from midiutil import MIDIFile #this package enables us to create an audo file
 from mingus.core import chords #this package uses music principles to define certain elements of our code (including what different chord or note names represent)
-import scrapy
 import pandas as pd
-import numpy as py
 
+#this is a filler csv file that I used in my own visual studio 
 filename = "songs.csv"
 df = pd.read_csv(filename)
 df
@@ -74,7 +73,7 @@ tempo = 120  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 
 #generate chord progression based on a specific song title 
-selected_song_title = 'Song 1' #update so that it allows for user input (Song 1 is a filler title)
+selected_song_title = 'Song 1' #update so that it allows for user input (Song 1 is a filler title from the random csv file I created above)
 selected_notes = song_notes[song_titles == selected_song_title]
 
 chord_progression = []  #initialize an empty list
