@@ -66,12 +66,14 @@ def SearchWithArtist():
         # Get the artist name from the form and format it properly
         artist = request.form['artist'].lower().replace(' ', '')
         # Search for the CSV file with the matching artist name
-        csv_file_path = os.path.join(os.getcwd(), 'chord_scraper', artist + '.csv')
+        csv_file_path = os.path.join(os.getcwd(), 'chord_scraper', artist + '2.csv')
         if os.path.exists(csv_file_path):
             # If the CSV file exists, read its contents
             with open(csv_file_path, 'r') as file:
                 next(file)
-                result_data = file.readlines()
+                result_data = [line.strip().split(',', 1)[:2] for line in file.readlines()]
+                # If a line has only one column, we still need to append an empty string
+                result_data = [[col if len(col) > 0 else '' for col in row] for row in result_data]
         else:
             # Find the first artist whose name starts with the same character as the input artist's name
             all_csv_files = [f[:-4] for f in os.listdir(os.path.join(os.getcwd(), 'chord_scraper')) if
