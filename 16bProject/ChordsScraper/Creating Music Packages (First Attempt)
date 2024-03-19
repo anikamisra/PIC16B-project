@@ -1,23 +1,36 @@
 #necssary packages: 
 from midiutil import MIDIFile #this package enables us to create an audo file
 from mingus.core import chords #this package uses music principles to define certain elements of our code (including what different chord or note names represent)
+import scrapy
+import pandas as pd
+import numpy as py
 
+filename = "songs.csv"
+df = pd.read_csv(filename)
+df
+
+#creating audio file
 chord_progression = ["Cmaj7", "Cmaj7", "Fmaj7", "Gdom7"]
 
-NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'] #we need to find a way to change this so it is our scraped notes rather than this random chord progression I found
+#extract unique song titles and their corresponding notes
+song_titles = df['Song Title']
+song_notes = df['Notes'].str.split(', ').explode()
+
+#initialize constants
+NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
 OCTAVES = list(range(11))
 NOTES_IN_OCTAVE = len(NOTES)
 
+#accounts for any errors and organizes the notes names a bit better
 errors = {
     'notes': 'Bad input, please refer this spec-\n'
-} #could edit this so it is just not the song in our database
-
+}
 
 def swap_accidentals(note):
     if note == 'Db':
         return 'C#'
     if note == 'D#':
-return 'Eb'
+        return 'Eb'
     if note == 'E#':
         return 'F'
     if note == 'Gb':
@@ -31,7 +44,6 @@ return 'Eb'
 
     return note
 
-
 def note_to_number(note: str, octave: int) -> int:
     note = swap_accidentals(note)
     assert note in NOTES, errors['notes']
@@ -44,7 +56,6 @@ def note_to_number(note: str, octave: int) -> int:
 
     return note
 
-
 array_of_notes = []
 for chord in chord_progression:
     array_of_notes.extend(chords.from_shorthand(chord))
@@ -54,7 +65,7 @@ for note in array_of_notes:
     OCTAVE = 4
     array_of_note_numbers.append(note_to_number(note, OCTAVE))
 
-#need to find a way to scrap this info so that we can use it in our function rather than just using this given set 
+#extra information for the song
 track = 0
 channel = 0
 time = 0  # In beats
@@ -62,13 +73,16 @@ duration = 1  # In beats
 tempo = 120  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 
-#the output will be an audio file that exists in the same file as the notebook 
-MyMIDI = MIDIFile(1)  # One track, defaults to format 1 (tempo track is created
-# automatically)
-MyMIDI.addTempo(track, time, tempo) #need to find a way to download our audio file into our website
+#generate chord progression based on a specific song title 
+selected_song_title = 'Song 1' #update so that it allows for user input (Song 1 is a filler title)
+selected_notes = song_notes[song_titles == selected_song_title]
 
-for i, pitch in enumerate(array_of_note_numbers):
-    MyMIDI.addNote(track, channel, pitch, time + i, duration, volume)
+chord_progression = []  #initialize an empty list
 
-with open("pure-edm-fire-arpeggio.mid", "wb") as output_file:
+#create chords from the selected notes
+for note in selected_notes:
+    chord_progression.append(f"{note}maj7")  #assuming all chords are maj7
+
+#creates our file to be outputed
+with open(f"{selected_song_title}.mid", "wb") as output_file:
     MyMIDI.writeFile(output_file)
