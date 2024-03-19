@@ -70,6 +70,7 @@ def SearchWithArtist():
         if os.path.exists(csv_file_path):
             # If the CSV file exists, read its contents
             with open(csv_file_path, 'r') as file:
+                next(file)
                 result_data = file.readlines()
         else:
             # Find the first artist whose name starts with the same character as the input artist's name
