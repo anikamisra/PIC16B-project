@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from flask import jsonify
 from flask_cors import CORS
 import subprocess
@@ -99,7 +99,15 @@ def SearchSong():
         write_variable_to_file2(url)
     return render_template('SearchSong.html')
 
-selected_line = ""
+@app.route('/download')
+def download_file():
+    # Provide the path to the file you want to serve
+    file_path = 'config.txt'
+    # Set the filename that the user will see when downloading
+    filename = 'downloaded_file.txt'
+    # Send the file to the user for download
+    return send_file(file_path)
+
 
 @app.route('/SearchWithArtist', methods=['GET', 'POST'])
 def SearchWithArtist():
