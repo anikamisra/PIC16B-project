@@ -102,9 +102,7 @@ def SearchSong():
 @app.route('/download')
 def download_file():
     # Provide the path to the file you want to serve
-    file_path = 'config.txt'
-    # Set the filename that the user will see when downloading
-    filename = 'downloaded_file.txt'
+    file_path = 'pure-edm-fire-arpeggio10.mid'
     # Send the file to the user for download
     return send_file(file_path)
 

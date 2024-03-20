@@ -12,11 +12,29 @@ errors = {
 }
 
 ########
-# ATHENA THIS IS WHERE WE EDIT 
-df = pd.read_csv("Users/anikamisra/desktop/taylor-swift.csv")
+# ATHENA THIS IS WHERE WE EDIT
+def read_csvpath_from_file():
+    with open('config.txt', 'r') as file:
+        for line in file:
+            if line.startswith('csv_path'):
+                variable_value = line.split('=')[1].strip().strip('"')
+                return variable_value
+    return None
+
+def read_index_from_file():
+    with open('config.txt', 'r') as file:
+        for line in file:
+            if line.startswith('user_song'):
+                variable_value = line.split('=')[1].strip().strip('"')
+                return variable_value
+    return None
+
+csvpath = read_csvpath_from_file()
+df = pd.read_csv(csvpath)
 df.head()
-df = pd.read_csv("Users/anikamisra/desktop/taylor-swift.csv")
-song_name = 'Look What You Made Me Do 2'
+df = pd.read_csv(csvpath)
+index = read_index_from_file()
+song_name = df.iloc[index, 0]
 chords_string = df.loc[df['song_name'] == 'Look What You Made Me Do 2', 'song_chords'].values[0]
 # DONE WITH EDITS
 ###############
