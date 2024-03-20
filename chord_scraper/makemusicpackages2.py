@@ -34,11 +34,14 @@ df = pd.read_csv(csvpath)
 df.head()
 df = pd.read_csv(csvpath)
 index = read_index_from_file()
+index = int(index)
 song_name = df.iloc[index, 0]
-chords_string = df.loc[df['song_name'] == 'Look What You Made Me Do 2', 'song_chords'].values[0]
+chords_string = df.loc[df['song_name'] == song_name, 'song_chords'].values[0]
 # DONE WITH EDITS
 ###############
-
+NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+OCTAVES = list(range(11))
+NOTES_IN_OCTAVE = len(NOTES)
 
 chords = ast.literal_eval(chords_string)
 extracted_strings = []
@@ -130,7 +133,7 @@ track = 0
 channel = 0
 time = 0  # In beats
 duration = 1  # In beats
-tempo = 120*bar_length  # In BPM
+tempo = 120*int(bar_length)  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 
 MyMIDI = MIDIFile(1)  # One track, defaults to format 1 (tempo track is created
@@ -140,5 +143,5 @@ MyMIDI.addTempo(track, time, tempo)
 for i, pitch in enumerate(array_of_note_numbers):
     MyMIDI.addNote(track, channel, pitch, time + i, duration, volume)
 
-with open("Users/anikamisra/desktop/pure-edm-fire-arpeggio10.mid", "wb") as output_file:
+with open("chord_scraper/test.mid", "wb") as output_file:
     MyMIDI.writeFile(output_file)
