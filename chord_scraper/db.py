@@ -10,6 +10,7 @@ class User:
 class Database:
     def __init__(self, db_pswd):
         uri = f"mongodb+srv://Chordy:{db_pswd}@cluster0.pirmgae.mongodb.net/"
+        print(uri)
         self.client = MongoClient(uri, server_api=ServerApi('1'))
         self.db = self.client['cluster0']
         try:

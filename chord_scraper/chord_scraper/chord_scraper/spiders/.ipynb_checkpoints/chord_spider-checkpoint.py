@@ -12,13 +12,13 @@ import time
 # scrapy crawl chord_scraper -o results.csv -a artistname=dua-lipa
 # scrapy crawl chord_scraper -o taylorswift.csv -a artistname=taylor-swift
 # scrapy crawl chord_scraper -o badbunny.csv -a artistname=bad-bunny
-# scrapy crawl chord_scraper -o the-weeknd.csv -a artistname=the-weeknd
+# scrapy crawl chord_scraper -o theweeknd.csv -a artistname=the-weeknd
 # scrapy crawl chord_scraper -o drake.csv -a artistname=drake
-# scrapy crawl chord_scraper -o travis-scott.csv -a artistname=travi-scott
+# scrapy crawl chord_scraper -o travisscott.csv -a artistname=travi-scott
 # scrapy crawl chord_scraper -o beyonce.csv -a artistname=beyonce
-# scrapy crawl chord_scraper -o michael-jackson.csv -a artistname=michael-jackson
-# scrapy crawl chord_scraper -o lady-gaga.csv -a artistname=lady-gaga
-# scrapy crawl chord_scraper -o ariana-grande.csv -a artistname=ariana-grande
+# scrapy crawl chord_scraper -o michaeljackson.csv -a artistname=michael-jackson
+# scrapy crawl chord_scraper -o ladygaga.csv -a artistname=lady-gaga
+# scrapy crawl chord_scraper -o arianagrande.csv -a artistname=ariana-grande
 
 
 class chord_scraper(scrapy.Spider): 

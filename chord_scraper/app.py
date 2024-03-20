@@ -6,6 +6,7 @@ import os
 import difflib
 from dotenv import load_dotenv
 from .db import Database, User
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -13,6 +14,47 @@ app.secret_key = os.urandom(24)
 CORS(app, supports_credentials=True)
 load_dotenv(".env")
 database = Database(os.getenv("DB_PSWD"))
+
+def write_variable_to_file(new_value):
+    with open('config.txt', 'r+') as file:
+        lines = file.readlines()
+        file.seek(0)
+        for line in lines:
+            if line.startswith('csv_path'):
+                file.write(f'csv_path = "{new_value}"\n')
+            else:
+                file.write(line)
+        file.truncate()
+
+def write_variable_to_file2(new_value):
+    with open('config.txt', 'r+') as file:
+        lines = file.readlines()
+        file.seek(0)
+        for line in lines:
+            if line.startswith('user_song'):
+                file.write(f'user_song = "{new_value}"\n')
+            else:
+                file.write(line)
+        file.truncate()
+
+def write_variable_to_file3(new_value):
+    with open('config.txt', 'r+') as file:
+        lines = file.readlines()
+        file.seek(0)
+        for line in lines:
+            if line.startswith('result'):
+                file.write(f'result = "{new_value}"\n')
+            else:
+                file.write(line)
+        file.truncate()
+
+def read_csvpath_from_file():
+    with open('config.txt', 'r') as file:
+        for line in file:
+            if line.startswith('csv_path'):
+                variable_value = line.split('=')[1].strip().strip('"')
+                return variable_value
+    return None
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -50,13 +92,12 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
-@app.route('/scraper1', methods=['GET', 'POST'])
-def scraper1():
+@app.route('/SearchSong', methods=['GET', 'POST'])
+def SearchSong():
     if request.method == 'POST':
-        # Run scraper 1
-        subprocess.run(['scrapy', 'crawl', 'chord_scraper', '-o', 'scraper1_output.csv', '-a', 'url_of_song=' + request.form['url']])
-        return redirect(url_for('scraper1_result'))
-    return render_template('scraper1.html')
+        url = request.form['url']
+        write_variable_to_file2(url)
+    return render_template('SearchSong.html')
 
 selected_line = ""
 
@@ -66,14 +107,15 @@ def SearchWithArtist():
         # Get the artist name from the form and format it properly
         artist = request.form['artist'].lower().replace(' ', '')
         # Search for the CSV file with the matching artist name
-        csv_file_path = os.path.join(os.getcwd(), 'chord_scraper', artist + '2.csv')
+        csv_file_path = os.path.join(os.getcwd(), 'chord_scraper', artist + '.csv')
         if os.path.exists(csv_file_path):
-            # If the CSV file exists, read its contents
-            with open(csv_file_path, 'r') as file:
-                next(file)
-                result_data = [line.strip().split(',', 1)[:2] for line in file.readlines()]
-                # If a line has only one column, we still need to append an empty string
-                result_data = [[col if len(col) > 0 else '' for col in row] for row in result_data]
+            write_variable_to_file(csv_file_path)
+            # Read the CSV file into a DataFrame
+            df = pd.read_csv(csv_file_path)
+            new_df = df.iloc[:, :2].copy()
+            result_data = []
+            for index, row in new_df.iterrows():
+                result_data.append(row.tolist())
         else:
             # Find the first artist whose name starts with the same character as the input artist's name
             all_csv_files = [f[:-4] for f in os.listdir(os.path.join(os.getcwd(), 'chord_scraper')) if
@@ -88,20 +130,6 @@ def SearchWithArtist():
         return render_template('SearchWithArtist.html', result_data=result_data)
     return render_template('SearchWithArtist.html')
 
-
-@app.route('/scraper1/result')
-def scraper1_result():
-    # Read scraper 1 output file and display its contents
-    with open('scraper1_output.csv', 'r') as file:
-        result = file.read()
-    return result
-
-@app.route('/scraper2/result')
-def scraper2_result():
-    # Read scraper 2 output file and display its contents
-    with open('scraper2_output.csv', 'r') as file:
-        result = file.read()
-    return result
 
 if __name__ == '__main__':
     app.run(debug=True)
