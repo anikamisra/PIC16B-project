@@ -6,7 +6,11 @@ import os
 import difflib
 from dotenv import load_dotenv
 from .db import Database, User
+from midiutil import MIDIFile
+from mingus.core import chords
+import ast
 import pandas as pd
+from pychord import Chord
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -16,11 +20,6 @@ load_dotenv(".env")
 database = Database(os.getenv("DB_PSWD"))
 
 def musicpackage():
-    from midiutil import MIDIFile
-    from mingus.core import chords
-    import ast
-    import pandas as pd
-    from pychord import Chord
 
     OCTAVES = list(range(11))
 
@@ -264,7 +263,7 @@ def SearchWithArtist():
             write_variable_to_file(csv_file_path)
             # Read the CSV file into a DataFrame
             df = pd.read_csv(csv_file_path)
-            new_df = df.iloc[:, :2].copy()
+            new_df = df.iloc[:, :1].copy()
             result_data = []
             for index, row in new_df.iterrows():
                 result_data.append(row.tolist())
