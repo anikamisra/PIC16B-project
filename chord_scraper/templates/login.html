@@ -4,11 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login to Chordy</title>
+    <style>
+        body {
+            font-family: "Gill Sans", sans-serif;
+            background-color: #f0f0f0; /* Change background color to a light shade */
+            color: #333; /* Change text color */
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #f77f00; /* Change heading color */
+        }
+        form {
+            background-color: #fff; /* Change form background color to white */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a slight shadow effect */
+        }
+        label {
+            color: #555; /* Change label color */
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #f77f00; /* Change submit button background color */
+            color: #fff; /* Change submit button text color */
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #f77f00; /* Darker shade on hover */
+        }
+        p {
+            color: #555; /* Change paragraph color */
+        }
+        a {
+            color: #f77f00; /* Change link color */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline; /* Underline link on hover */
+        }
+        .error {
+            color: red; /* Change error message color */
+        }
+    </style>
 </head>
 <body>
     <h1>Login</h1>
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
     <form action="{{ url_for('login') }}" method="post">
         <label for="username">Username:</label><br>
