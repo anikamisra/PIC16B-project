@@ -26,15 +26,11 @@ Welcome to chordy, a web app that allows you to search for an artist, their song
 <!-- CONTRIBUTORS -->
 ## Contributors
 
-* Athena:
-* Izzy:
-* Anika: 
+Athena, Izzy, and Anika
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- SOURCES AND CITATIONS -->
 ## Sources and Citations
-* 
-* 
+* https://medium.com/@stevehiehn/how-to-generate-music-with-python-the-basics-62e8ea9b99a5
+* https://tedboy.github.io/flask/generated/flask.send_file.html
 
-<p align="right">(<a href="#top">back to top</a>)</p>
