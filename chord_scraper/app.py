@@ -20,16 +20,21 @@ load_dotenv(".env")
 database = Database(os.getenv("DB_PSWD"))
 
 def musicpackage():
+    """
+    Main function for processing music data.
+    Reads chords data from a CSV file, converts chords to notes,
+    and generates a MIDI file based on the chord progression.
+    """
 
     OCTAVES = list(range(11))
-
     errors = {
         'error!!!'
     }
-
-    ########
-    # ATHENA THIS IS WHERE WE EDIT
     def read_csvpath_from_file():
+        """
+        Reads from the config.txt file.
+        Returns the content of line named "cs_path"
+        """
         with open('config.txt', 'r') as file:
             for line in file:
                 if line.startswith('csv_path'):
@@ -38,6 +43,10 @@ def musicpackage():
         return None
 
     def read_index_from_file():
+        """
+         Reads from the config.txt file.
+         Returns the content of line named "user_song"
+         """
         with open('config.txt', 'r') as file:
             for line in file:
                 if line.startswith('user_song'):
@@ -53,17 +62,18 @@ def musicpackage():
     index = int(index)
     song_name = df.iloc[index, 0]
     chords_string = df.loc[df['song_name'] == song_name, 'song_chords'].values[0]
-    # DONE WITH EDITS
-    ###############
+
     NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
     OCTAVES = list(range(11))
     NOTES_IN_OCTAVE = len(NOTES)
 
     chords = ast.literal_eval(chords_string)
     extracted_strings = []
+
     # iterate through dictionary values
     for key, value in chords.items():
         extracted_strings.append(value[0])  # Append the first element of the tuple
+
     # get barlength
     first_item = list(chords.keys())[0]
     bar_length = chords[first_item][1]
@@ -159,7 +169,11 @@ def musicpackage():
 
     with open("chord_scraper/yourmusic.mid", "wb") as output_file:
         MyMIDI.writeFile(output_file)
+
 def write_variable_to_file(new_value):
+    """
+       Writes a new value to the 'csv_path' variable in the config file.
+    """
     with open('config.txt', 'r+') as file:
         lines = file.readlines()
         file.seek(0)
@@ -171,6 +185,9 @@ def write_variable_to_file(new_value):
         file.truncate()
 
 def write_variable_to_file2(new_value):
+    """
+    Writes a new value to the 'user_song' variable in the config file.
+    """
     with open('config.txt', 'r+') as file:
         lines = file.readlines()
         file.seek(0)
@@ -181,18 +198,11 @@ def write_variable_to_file2(new_value):
                 file.write(line)
         file.truncate()
 
-def write_variable_to_file3(new_value):
-    with open('config.txt', 'r+') as file:
-        lines = file.readlines()
-        file.seek(0)
-        for line in lines:
-            if line.startswith('result'):
-                file.write(f'result = "{new_value}"\n')
-            else:
-                file.write(line)
-        file.truncate()
-
 def read_csvpath_from_file():
+    """
+    Reads the 'csv_path' variable value from the config file.
+    Returns None if the variable is not found.
+    """
     with open('config.txt', 'r') as file:
         for line in file:
             if line.startswith('csv_path'):
@@ -202,6 +212,11 @@ def read_csvpath_from_file():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """
+    Renders the index page.
+    If the user is logged in, displays the username.
+    Redirects to the login page if the user is not logged in.
+    """
     if 'username' in session:
         return render_template('index.html', username=session['username'])
     else:
@@ -209,6 +224,11 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Handles the login functionality.
+    Validates user credentials and sets session username if valid.
+    Renders the login page with an error message if credentials are invalid.
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -221,6 +241,11 @@ def login():
 
 @app.route('/createAccount', methods=['GET', 'POST'])
 def create_account():
+    """
+    Handles the creation of new user accounts.
+    Adds a new user to the database if the username is unique.
+    Renders the create account page with an error message if the username already exists.
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -233,11 +258,20 @@ def create_account():
 
 @app.route('/logout')
 def logout():
+    """
+    Logs out the current user by removing the username from the session.
+    Redirects to the index page after logout.
+    """
     session.pop('username', None)
     return redirect(url_for('index'))
 
 @app.route('/SearchSong', methods=['GET', 'POST'])
 def SearchSong():
+    """
+    Handles the search song functionality.
+    Retrieves the URL entered by the user and writes it to the config file.
+    Renders the search song page.
+    """
     if request.method == 'POST':
         url = request.form['url']
         write_variable_to_file2(url)
@@ -245,6 +279,9 @@ def SearchSong():
 
 @app.route('/download')
 def download_file():
+    """
+    Downloads the generated MIDI file to the user's device.
+    """
     musicpackage()
     # Provide the path to the file you want to serve
     file_path = 'chord_scraper/yourmusic.mid'
@@ -254,6 +291,14 @@ def download_file():
 
 @app.route('/SearchWithArtist', methods=['GET', 'POST'])
 def SearchWithArtist():
+    """
+    Handles the search with artist functionality.
+    Retrieves the artist name entered by the user.
+    Searches for a matching CSV file based on the artist's name.
+    If found, displays the matching songs.
+    If not found, suggests similar artists or displays an error message.
+    Renders the search with artist page.
+    """
     if request.method == 'POST':
         # Get the artist name from the form and format it properly
         artist = request.form['artist'].lower().replace(' ', '')
