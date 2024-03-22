@@ -157,7 +157,7 @@ def musicpackage():
     for i, pitch in enumerate(array_of_note_numbers):
         MyMIDI.addNote(track, channel, pitch, time + i, duration, volume)
 
-    with open("chord_scraper/test.mid", "wb") as output_file:
+    with open("chord_scraper/yourmusic.mid", "wb") as output_file:
         MyMIDI.writeFile(output_file)
 def write_variable_to_file(new_value):
     with open('config.txt', 'r+') as file:
@@ -247,7 +247,7 @@ def SearchSong():
 def download_file():
     musicpackage()
     # Provide the path to the file you want to serve
-    file_path = 'chord_scraper/test.mid'
+    file_path = 'chord_scraper/yourmusic.mid'
     # Send the file to the user for download
     return send_file(file_path)
 
