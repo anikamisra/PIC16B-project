@@ -5,7 +5,7 @@ import subprocess
 import os
 import difflib
 from dotenv import load_dotenv
-from .db import Database, User
+from db import Database, User
 from midiutil import MIDIFile
 from mingus.core import chords
 import ast
