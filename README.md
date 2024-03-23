@@ -54,6 +54,9 @@ Also, make sure to pip install the following packages:
 - mingus
 - pandas
 - pychord
+- Selenium
+- scrapy
+
 And pip install any other non-existing or non-updated packages. This may depend on your current environment. 
 
 When there is no warnings (and you are at the chord_scraper directory), 
