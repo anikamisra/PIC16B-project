@@ -46,7 +46,15 @@ You may need to
 ```console
 python -m pip install "pymongo [srv]"
 ```
-or pip install any non-existsing (or not updated) packages - this depends on your current environment. 
+Also, make sure to pip install the following packages: 
+- flask
+- flask_cors
+- dotenv
+- midiutil
+- mingus
+- pandas
+- pychord
+And pip install any other non-existing or non-updated packages. This may depend on your current environment. 
 
 When there is no warnings (and you are at the chord_scraper directory), 
 ```console
